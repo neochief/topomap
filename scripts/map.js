@@ -47,31 +47,33 @@ $(window).load(function() {
 		"mapTypeId": hash_data.type
 	});
 
-	map.mapTypes.set("Yandex Sat", new google.maps.ImageMapType({
-		getTileUrl: function(coord, zoom) {
-			return "http://sat0" + ((coord.x + coord.y) % 5) + ".maps.yandex.net/tiles?l=sat&v=2.16.0&x=" +
-				coord.x + "&y=" + coord.y + "&z=" + zoom + "";
-		},
-		tileSize: new google.maps.Size(256, 256),
-		isPng: true,
-		alt: "Yandex Sat",
-		name: "Yandex Sat",
-		maxZoom: 17,
-		projection: new YandexProjection()
-	}));
+	var yandexSatType = new google.maps.ImageMapType({
+                getTileUrl: function(coord, zoom) {
+                        return "http://sat0" + ((coord.x + coord.y) % 5) + ".maps.yandex.net/tiles?l=sat&v=2.16.0&x=" +
+                                coord.x + "&y=" + coord.y + "&z=" + zoom + "";
+                },
+                tileSize: new google.maps.Size(256, 256),
+                isPng: true,
+                alt: "Yandex Sat",
+                name: "Yandex Sat",
+                maxZoom: 17
+        });
+        yandexSatType.projection = new YandexProjection();
+	map.mapTypes.set("Yandex Sat", yandexSatType);
 
-	map.mapTypes.set("Yandex Map", new google.maps.ImageMapType({
-		getTileUrl: function(coord, zoom) {
-			return "http://vec0" + ((coord.x + coord.y) % 5) + ".maps.yandex.net/tiles?l=map&v=2.16.0&x=" +
-				coord.x + "&y=" + coord.y + "&z=" + zoom + "";
-		},
-		tileSize: new google.maps.Size(256, 256),
-		isPng: true,
-		alt: "Yandex Map",
-		name: "Yandex Map",
-		maxZoom: 17,
-		projection: new YandexProjection()
-	}));
+	var yandexMapType = new google.maps.ImageMapType({
+                getTileUrl: function(coord, zoom) {
+                        return "http://vec0" + ((coord.x + coord.y) % 5) + ".maps.yandex.net/tiles?l=map&v=2.16.0&x=" +
+                                coord.x + "&y=" + coord.y + "&z=" + zoom + "";
+                },
+                tileSize: new google.maps.Size(256, 256),
+                isPng: true,
+                alt: "Yandex Map",
+                name: "Yandex Map",
+                maxZoom: 17
+        });
+	yandexMapType.projection = new YandexProjection();
+	map.mapTypes.set("Yandex Map", yandexMapType);
 
 	function YandexProjection() {
 		this.pixelOrigin_ = new google.maps.Point(128, 128);
@@ -134,7 +136,7 @@ $(window).load(function() {
 		isPng: true,
 		alt: "Soviet",
 		name: "Soviet",
-		maxZoom: 17
+		maxZoom: 13
 	}));
 
 	map.setOptions({mapTypeControlOptions: {mapTypeIds: [google.maps.MapTypeId.SATELLITE, google.maps.MapTypeId.ROADMAP, "Yandex Sat", "Yandex Map", "Soviet"]} });
