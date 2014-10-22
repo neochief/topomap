@@ -2,7 +2,7 @@ var map;
 
 function parseHash() {
 	var hash = window.location.hash.slice(1);
-	var res, lat = 50.428206, lng = 30.555382, z = 10, t = "satellite", points = null;
+	var res, lat = 50.428206, lng = 30.555382, z = 10, t = "hybrid", points = null;i
 	if (res = hash.match(/lat=([0-9\.]*)/)) {
 		lat = res[1];
 	}
@@ -13,7 +13,7 @@ function parseHash() {
 		z = res[1] ? res[1] : 10;
 	}
 	if (res = hash.match(/t=([a-zA-Z ]*)/)) {
-		t = res[1] ? res[1] : 'satellite';
+		t = res[1] ? res[1] : 'hybrid';
 	}
 
 	if (res = hash.match(/gz=([0-9;]*)/)) {
@@ -139,7 +139,7 @@ $(window).load(function() {
 		maxZoom: 13
 	}));
 
-	map.setOptions({mapTypeControlOptions: {mapTypeIds: [google.maps.MapTypeId.SATELLITE, google.maps.MapTypeId.ROADMAP, "Yandex Sat", "Yandex Map", "Soviet"]} });
+	map.setOptions({mapTypeControlOptions: {mapTypeIds: [google.maps.MapTypeId.HYBRID, google.maps.MapTypeId.ROADMAP, "Yandex Sat", "Yandex Map", "Soviet"]} });
 
 	if (hash_data.points) {
 		lines.points = hash_data.points;
