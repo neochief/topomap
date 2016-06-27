@@ -171,7 +171,7 @@ function initMap() {
 
 	map.mapTypes.set("Soviet", new google.maps.ImageMapType({
 		getTileUrl: function(coord, zoom) {
-			return window.location.href.replace(/\/.*?$/, '/') + "tiles/Soviet/Z" + zoom + "/" + coord.y + "/" + coord.x + ".png";
+			return window.location.href.replace(/\/[^\/]*?$/, '/') + "tiles/Soviet/Z" + zoom + "/" + coord.y + "/" + coord.x + ".png";
 		},
 		tileSize: new google.maps.Size(256, 256),
 		isPng: true,
