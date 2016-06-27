@@ -160,7 +160,7 @@ function initMap() {
 
 	map.mapTypes.set("OSM Cycle", new google.maps.ImageMapType({
 		getTileUrl: function(coord, zoom) {
-			return "http//a.tile.opencyclemap.org/cycle/" + zoom + "/" + coord.x + "/" + coord.y + ".png";
+			return "http://a.tile.opencyclemap.org/cycle/" + zoom + "/" + coord.x + "/" + coord.y + ".png";
 		},
 		tileSize: new google.maps.Size(256, 256),
 		isPng: true,
