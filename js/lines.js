@@ -11,33 +11,39 @@ var lines = {
 	reDrawMarkers: function() {
 		this.clearMarkers();
 		if (this.points.length > 0) {
-			this.drawStopStartMarker(this.points[0], "start");
-			this.drawStopStartMarker(this.points[this.points.length - 1], "stop");
-
+			this.drawStartMarker(this.points[0], "start");
+			this.drawStopMarker(this.points[this.points.length - 1], "stop");
 			for (var m = 1; m < this.points.length - 1; m++) {
-				var imageUrl;
-				var mileNum = m + 1;
-				imageUrl = "markers.png";
-
-				var icon = {
-					url: imageUrl,
-					size: new google.maps.Size(10, 10),
-					origin: new google.maps.Point(0, 0),
-					anchor: new google.maps.Point(5, 5)
-				};
-
-				this.drawMileMarker(this.points[m], icon, m);
+				this.drawMileMarker(this.points[m], m);
 			}
 		}
 	},
 
-	drawStopStartMarker: function(gLatLng, id) {
-		this.ptHash[id] = new google.maps.Marker({
-			position: gLatLng,
-			map: map
-		});
+	drawStartMarker: function(gLatLng, idx) {
+		this.drawMarker(gLatLng, idx, {
+			url: "marker-start.png",
+			size: new google.maps.Size(24, 24),
+			origin: new google.maps.Point(0, 0),
+			anchor: new google.maps.Point(7, 20)
+		})
 	},
-	drawMileMarker: function(gLatLng, icon, idx) {
+	drawStopMarker: function(gLatLng, idx) {
+		this.drawMarker(gLatLng, idx, {
+			url: "marker-finish.png",
+			size: new google.maps.Size(24, 24),
+			origin: new google.maps.Point(0, 0),
+			anchor: new google.maps.Point(7, 20)
+		})
+	},
+	drawMileMarker: function(gLatLng, idx) {
+		this.drawMarker(gLatLng, idx, {
+			url: "marker-checkpoint.png",
+			size: new google.maps.Size(24, 24),
+			origin: new google.maps.Point(0, 0),
+			anchor: new google.maps.Point(7, 20)
+		})
+	},
+	drawMarker: function(gLatLng, idx, icon) {
 		if (this.ptHash[idx] == undefined) {
 			this.ptHash[idx] = new google.maps.Marker({
 				position: gLatLng,

@@ -4,116 +4,23 @@
     <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
     <title>Topo-Ukraine</title>
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no"/>
-    <script type="text/javascript" src="scripts/jquery-2.0.3.min.js"></script>
-    <script type="text/javascript" src="scripts/mousetrap.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mousetrap/1.4.6/mousetrap.js"></script>
     <script type="text/javascript"
-            src="https://maps.googleapis.com/maps/api/js?sensor=false&libraries=geometry,visualization&dummy=.js"></script>
-    <script type="text/javascript" src="scripts/lines.js"></script>
-    <script type="text/javascript" src="scripts/map.js"></script>
-    <script type="text/javascript" src="scripts/interface.js"></script>
-
-    <style>
-        body {
-            font-size: 10px;
-            line-height: 15px;
-            font-family: Arial;
-            padding: 0;
-            margin: 0;
-        }
-
-        p, ul {
-            margin: 0 0 1em;
-        }
-
-        #info {
-            position: absolute;
-            background: rgba(255, 255, 255, 0.85);
-            left: 0;
-            z-index: 100;
-            padding: 20px;
-            right: 0;
-            height: auto;
-            top: 100%;
-        }
-
-        #info.opened {
-            top: auto;
-            bottom: 0;
-        }
-
-        #info ul {
-            padding: 0 0 0 10px;
-        }
-
-        #info td {
-            width: 33%;
-        }
-
-        .wrapper {
-            position: absolute;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            top: 0;
-            overflow: hidden;
-        }
-
-        #map {
-            position: absolute;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            top: 0;
-            margin: 0;
-        }
-
-        .close {
-            background: rgba(255, 255, 255, 0.85);
-            position: absolute;
-            padding: 10px;
-            width: 15px;
-            height: 15px;
-            top: -35px;
-            left: 35px;
-            font-size: 10px;
-            text-decoration: none;
-            text-align: center;
-            font-size: 20px;
-            color: #444;
-            border-top-left-radius: 5px;;
-            border-top-right-radius: 5px;;
-        }
-
-        #distances {
-            background: rgba(255, 255, 255, 0.85);
-            z-index: 100;
-            position: absolute;
-            right: 0;
-            top: 100px;
-            width: 200px;
-            height: auto;
-            padding: 5px 10px;
-        }
-
-        #distances .points {
-            margin: 0;
-            padding: 0 0 0 20px;
-            max-height: 325px;
-            overflow-y: scroll;
-        }
-
-        #distances .points li {
-            margin: 0;
-            padding: 0;
-        }
-    </style>
+            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDkKmAJ3-CijCHg8CmwYqUKO5QxeVpqqsE&libraries=geometry,visualization&dummy=.js"></script>
+    <script type="text/javascript" src="js/lines.js"></script>
+    <script type="text/javascript" src="js/map.js"></script>
+    <script type="text/javascript" src="js/interface.js"></script>
+    <link rel="stylesheet" href="/css/styles.css"/>
 </head>
 <body>
 <div class="wrapper">
-    <div id="distances" style="display:none;">
+    <div id="distances">
+        <div class="info">Линейка строится двойным кликом</div>
         <div class="total"></div>
         <ol class="points">
         </ol>
+        <div class="info2"><code>Ctrl+Z</code> для отмены последней точки</div>
     </div>
     <div id="info">
         <a href="#" class="close">↑</a>

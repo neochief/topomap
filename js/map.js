@@ -2,21 +2,33 @@ var map;
 
 function parseHash() {
 	var hash = window.location.hash.slice(1);
-	var res, lat = 50.428206, lng = 30.555382, z = 10, t = "hybrid", points = null;i
-	if (res = hash.match(/lat=([0-9\.]*)/)) {
+	var res, z = 10, t = "hybrid", points = null;i
+
+	// Default coords of Kiev.
+	var lat = 50.4471532;
+	var lng = 30.6481171;
+	var default_coords = false;
+
+	if (res = hash.match(/lat=([0-9\.]+)/)) {
 		lat = res[1];
 	}
-	if (res = hash.match(/lon=([0-9\.]*)/)) {
+	else {
+		default_coords = true;
+	}
+	if (res = hash.match(/lon=([0-9\.]+)/)) {
 		lng = res[1];
 	}
-	if (res = hash.match(/z=([0-9\.]*)/)) {
+	else {
+		default_coords = true;
+	}
+	if (res = hash.match(/z=([0-9\.]+)/)) {
 		z = res[1] ? res[1] : 10;
 	}
-	if (res = hash.match(/t=([a-zA-Z ]*)/)) {
+	if (res = hash.match(/t=([a-zA-Z ]+)/)) {
 		t = res[1] ? res[1] : 'hybrid';
 	}
 
-	if (res = hash.match(/gz=([0-9;]*)/)) {
+	if (res = hash.match(/gz=([0-9;]+)/)) {
 		var mx, my, nx, ny;
 		var gz = res[1] ? res[1] : '';
 		if (gz) {
@@ -34,12 +46,19 @@ function parseHash() {
 		}
 	}
 
-	return { "lat": parseFloat(lat), "lng": parseFloat(lng), "zoom": parseInt(z), "type": t, "points": points }
+	return {
+		"default": default_coords,
+		"lat": parseFloat(lat),
+		"lng": parseFloat(lng),
+		"zoom": parseInt(z),
+		"type": t,
+		"points": points
+	};
 }
 
-$(window).load(function() {
-	var hash_data = parseHash();
+var hash_data = parseHash();
 
+function initMap() {
 	map = new google.maps.Map(document.getElementById('map'), {
 		"disableDoubleClickZoom": true,
 		"zoom": hash_data.zoom,
@@ -48,30 +67,30 @@ $(window).load(function() {
 	});
 
 	var yandexSatType = new google.maps.ImageMapType({
-                getTileUrl: function(coord, zoom) {
-                        return "http://sat0" + ((coord.x + coord.y) % 5) + ".maps.yandex.net/tiles?l=sat&v=2.16.0&x=" +
-                                coord.x + "&y=" + coord.y + "&z=" + zoom + "";
-                },
-                tileSize: new google.maps.Size(256, 256),
-                isPng: true,
-                alt: "Yandex Sat",
-                name: "Yandex Sat",
-                maxZoom: 17
-        });
-        yandexSatType.projection = new YandexProjection();
+		getTileUrl: function(coord, zoom) {
+			return "//sat0" + ((coord.x + coord.y) % 5) + ".maps.yandex.net/tiles?l=sat&v=2.16.0&x=" +
+				coord.x + "&y=" + coord.y + "&z=" + zoom + "";
+		},
+		tileSize: new google.maps.Size(256, 256),
+		isPng: true,
+		alt: "Yandex Sat",
+		name: "Yandex Sat",
+		maxZoom: 17
+	});
+	yandexSatType.projection = new YandexProjection();
 	map.mapTypes.set("Yandex Sat", yandexSatType);
 
 	var yandexMapType = new google.maps.ImageMapType({
-                getTileUrl: function(coord, zoom) {
-                        return "http://vec0" + ((coord.x + coord.y) % 5) + ".maps.yandex.net/tiles?l=map&v=2.16.0&x=" +
-                                coord.x + "&y=" + coord.y + "&z=" + zoom + "";
-                },
-                tileSize: new google.maps.Size(256, 256),
-                isPng: true,
-                alt: "Yandex Map",
-                name: "Yandex Map",
-                maxZoom: 17
-        });
+		getTileUrl: function(coord, zoom) {
+			return "//vec0" + ((coord.x + coord.y) % 5) + ".maps.yandex.net/tiles?l=map&v=2.16.0&x=" +
+				coord.x + "&y=" + coord.y + "&z=" + zoom + "";
+		},
+		tileSize: new google.maps.Size(256, 256),
+		isPng: true,
+		alt: "Yandex Map",
+		name: "Yandex Map",
+		maxZoom: 17
+	});
 	yandexMapType.projection = new YandexProjection();
 	map.mapTypes.set("Yandex Map", yandexMapType);
 
@@ -128,9 +147,31 @@ $(window).load(function() {
 		return this;
 	}
 
+	map.mapTypes.set("OSM", new google.maps.ImageMapType({
+		getTileUrl: function(coord, zoom) {
+			return "//a.tile.openstreetmap.org/" + zoom + "/" + coord.x + "/" + coord.y + ".png";
+		},
+		tileSize: new google.maps.Size(256, 256),
+		isPng: true,
+		alt: "Open Street Map",
+		name: "OSM",
+		maxZoom: 17
+	}));
+
+	map.mapTypes.set("OSM Cycle", new google.maps.ImageMapType({
+		getTileUrl: function(coord, zoom) {
+			return "http//a.tile.opencyclemap.org/cycle/" + zoom + "/" + coord.x + "/" + coord.y + ".png";
+		},
+		tileSize: new google.maps.Size(256, 256),
+		isPng: true,
+		alt: "Open Street Map Cycle",
+		name: "OSM Cycle",
+		maxZoom: 17
+	}));
+
 	map.mapTypes.set("Soviet", new google.maps.ImageMapType({
 		getTileUrl: function(coord, zoom) {
-			return "http://373.kiev.ua/topomap/Z" + zoom + "/" + coord.y + "/" + coord.x + ".png";
+			return window.location.href.replace(/\/.*?$/, '/') + "tiles/Soviet/Z" + zoom + "/" + coord.y + "/" + coord.x + ".png";
 		},
 		tileSize: new google.maps.Size(256, 256),
 		isPng: true,
@@ -139,21 +180,24 @@ $(window).load(function() {
 		maxZoom: 13
 	}));
 
-	map.setOptions({mapTypeControlOptions: {mapTypeIds: [google.maps.MapTypeId.HYBRID, google.maps.MapTypeId.ROADMAP, "Yandex Sat", "Yandex Map", "Soviet"]} });
+	map.setOptions({mapTypeControlOptions: {mapTypeIds: [google.maps.MapTypeId.HYBRID, google.maps.MapTypeId.ROADMAP, "Yandex Sat", "Yandex Map", "OSM", "OSM Cycle", "Soviet"]} });
+
+	map.setMapTypeId(hash_data.type);
 
 	if (hash_data.points) {
 		lines.points = hash_data.points;
 		redraw();
 	}
 
-
 	navigator.geolocation.getCurrentPosition(function(position) {
 		var latitude = position.coords.latitude;
 		var longitude = position.coords.longitude;
 		var center = new google.maps.LatLng(latitude, longitude);
 		new google.maps.Marker({map: map, position: center});
+		if (hash_data.default) {
+			map.setCenter(center);
+		}
 	});
-
 
 	function update_hash() {
 		var fragment;
@@ -188,7 +232,6 @@ $(window).load(function() {
 	google.maps.event.addListener(map, 'zoom_changed', update_hash);
 	google.maps.event.addListener(map, 'maptypeid_changed', update_hash);
 
-
 	google.maps.event.addListener(map, "dblclick", function(evt) {
 		lines.points.push(evt.latLng);
 		update_hash();
@@ -200,19 +243,24 @@ $(window).load(function() {
 		update_hash();
 		redraw();
 	});
-});
+}
+$(window).load(initMap);
 
 function renderDistance(distances) {
 	if (distances.length > 1) {
+		$('#distances .info').hide();
+		$('#distances .info2').show();
 		$('#distances .total').html('Общая дистанция: <b>' + addSpaces(distances[0]) + '&nbsp;м.</b>');
 		$('#distances .points').html('');
 		for (var m = 1; m < distances.length; m++) {
 			$('#distances .points').append('<li>' + addSpaces(distances[m]) + '&nbsp;м.</li>');
 		}
-		$('#distances').show();
 	}
 	else {
-		$('#distances').hide();
+		$('#distances .info').show();
+		$('#distances .info2').hide();
+		$('#distances .total').html('');
+		$('#distances .points').html('');
 	}
 }
 
